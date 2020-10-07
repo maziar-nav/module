@@ -1,0 +1,40 @@
+void NVIC_Configuration(void){
+   NVIC_InitTypeDef NVIC_InitStructure;
+	/* Configure one bit for preemption priority */
+	 NVIC_PriorityGroupConfig(NVIC_PriorityGroup_1);
+
+	//KEY0
+	NVIC_InitStructure.NVIC_IRQChannel = EXTI2_IRQn;
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+	NVIC_Init(&NVIC_InitStructure);
+}
+
+void EXTI_Configuration(void)
+{
+   EXTI_InitTypeDef EXTI_InitStructure;
+
+   GPIO_EXTILineConfig(GPIO_PortSourceGPIOA, GPIO_PinSource2);
+
+   EXTI_InitStructure.EXTI_Line = EXTI_Line2;
+   EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
+   EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Falling;
+   EXTI_InitStructure.EXTI_LineCmd = ENABLE;
+   EXTI_Init(&EXTI_InitStructure);
+
+}
+
+ void EXTI2_IRQHandler(void)                      //EXTIx_IRQHandler->x is pin number gpio
+{
+   if(EXTI->PR & (1UL << 2))                 //if(EXTI->PR & (1UL << x)) -> x is pin number
+   {
+      if(EXTI_GetITStatus(EXTI_Line2) != RESET) // EXTI_Line2-> is line of interrupt from pin 2
+      {
+         EXTI_ClearITPendingBit(EXTI_Line2);
+ 
+      }
+   }
+	 	while(1){
+		 GPIOB->ODR |=  (1UL << (8));   
+	}
